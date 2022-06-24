@@ -3,9 +3,10 @@ from .models import *
 
 
 class CreateUserSerializer(serializers.ModelSerializer):
+    # username = serializers.CharField(read_only = True)
     class Meta:
         model = User
-        fields = ('id', 'first_name','last_name', 'email', 'password', 'mobile_numer', 'alternate_number', 'district', 'deviceType', 'deviceToken', 'deviceName','deviceOs','deviceId')
+        fields = ('first_name','last_name', 'email', 'password', 'mobile_numer', 'alternate_number', 'district', 'deviceType', 'deviceToken', 'deviceName','deviceOs','deviceId')
         extra_kwargs = {'password': {'write_only': True}}
 
     def __init__(self, *args, **kwargs):
@@ -30,13 +31,30 @@ class CreateUserSerializer(serializers.ModelSerializer):
         if User.objects.filter(mobile_numer=mobile_number).exists():
             raise serializers.ValidationError("Mobile number already in use")
 
-        if User.objects.filter(email=email).exists():
-            raise serializers.ValidationError("Email already in use")
+        # if User.objects.filter(email=email).exists():
+        #     raise serializers.ValidationError("Email already in use")
 
         return attrs
 
-    def create(self, validatecurrent_seasond_data):
-        user = User.objects.create_user(**validatecurrent_seasond_data)
-        print(user)
+    def create(self, validated_data):
+        user = User.objects.create(
+        email=validated_data['email'],
+        first_name=validated_data['first_name'],
+        last_name=validated_data['last_name'],
+        password=validated_data['password'],
+        mobile_numer=validated_data['mobile_numer'],
+        alternate_number=validated_data['alternate_number'],
+        district=validated_data['district'],
+        deviceType=validated_data['deviceType'],
+        deviceToken=validated_data['deviceToken'],
+        deviceName=validated_data['deviceName'],
+        deviceOs=validated_data['deviceOs'],
+        deviceId=validated_data['deviceId'],
+        )
+        user.set_password(validated_data['password'])
+        user.save()
         return user
+        # user = User.objects.create_user(**validatecurrent_seasond_data)
+        # print(user)
+        # return user
 
