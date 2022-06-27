@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'Salary',
     'drf_spectacular',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -62,7 +63,31 @@ MIDDLEWARE = [
 REST_FRAMEWORK = {
     # YOUR SETTINGS
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    # 'DEFAULT_PERMISSION_CLASSES': [
+    #     'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    # ]
+    'DEFAULT_PERMISSION_CLASSES': [
+            # 'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
+            'rest_framework.permissions.IsAuthenticated',
+        ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        # 'rest_framework.authentication.SessionAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        # 'rest_framework.authentication.TokenAuthentication',
+    ],
 }
+
+SWAGGER_SETTINGS = {
+        'SECURITY_DEFINITIONS': {
+            'Bearer': {
+                'type': 'apiKey',
+                'name': 'Authorization',
+                'in': 'header'
+            }
+        },
+    }
 
 ROOT_URLCONF = 'management.urls'
 
@@ -148,3 +173,6 @@ SPECTACULAR_SETTINGS = {
     'SERVE_INCLUDE_SCHEMA': False,
     # OTHER SETTINGS
 }   
+
+TWILIO_ACCOUNT_SID = env('TWILIO_ACCOUNT_SID')
+TWILIO_AUTH_TOKEN = env('TWILIO_AUTH_TOKEN')

@@ -67,7 +67,7 @@ def required_header(nonce, timestamp, token):
 def isUserAuth(request):
 
     if request.user is not None and request.user.id != None:
-        if request.user.isActive==False:
+        if request.user.is_active==False:
             return _("Your account inactive by administrator. please contact administrator")
         return True
     return True
